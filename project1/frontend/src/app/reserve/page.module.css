@@ -1,0 +1,19 @@
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    text-align: center;
+}
+
+.cell {
+    height: 40px;
+}
+
+.cell.selected {
+    background: #999;
+    color: white;
+}
+
+.cell.empty {
+    background: transparent;
+}
