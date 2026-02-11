@@ -1,10 +1,30 @@
 import reservationData from '../data/reservation.data.js'
 import status from '../data/status.js';
+import {reserveId} from "../utils/idGenerator.js";
+import {pool} from "../data/db.js"
 
-export function findReservation(req, res, next) {
+export async function findByIdName({reserveId, name}) {
+    let sql = "SELECT * FROM reservations WHERE id = ?";
+    const params = [reserveId];
+    if (name) {
+        sql += "AND name = ?";
+        params.push(name);
+    }
+
+    const [rows] = await pool.query(sql, params);
+    return rows[0] || null;
+}
+
+export async function existsDate(startAt, endAt) {
+    const sql = "SELECT * FROM reservations WHERE startAt < ? AND endAt > ?";
+
+    const [rows] = await pool.query(sql, [endAt, startAt])
+    return rows.length > 0;
+}
+
+export async function findReservation(req, res, next) {
     const id = parseInt(req.params.id);
     const name = req.query.name;
-    const datas = reservationData;
 
     // id 전달 X
     if (!Number.isInteger(id))
@@ -15,22 +35,35 @@ export function findReservation(req, res, next) {
             }
         });
 
-    const filter = {
-        reserveId: id,
-        name: name || null,
-    }
-    const data = datas.find(d => matchFilter(d, filter));
-
-    if (!data)
-        return res.status(404).json({
-            error: {
-                "code": "VALIDATION_ERROR",
-                "message": "예약 내역 없음"
-            }
+    try {
+        const datas = await findByIdName({
+            reserveId: id,
+            name: name || null,
         })
 
-    res.data = data;
-    next();
+        if (!datas)
+            return res.status(404).json({
+                error: {
+                    "code": "NOT_FOUND",
+                    "message": "예약 내역 없음",
+                }
+            })
+
+        const data = datas.find(d => matchFilter(d, datas));
+
+        if (!data)
+            return res.status(404).json({
+                error: {
+                    "code": "VALIDATION_ERROR",
+                    "message": "예약 내역 없음"
+                }
+            })
+
+        res.data = data;
+        next();
+    } catch (e) {
+        next(e);
+    }
 }
 
 export function findStatus (data) {

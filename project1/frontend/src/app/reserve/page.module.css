@@ -1,19 +1,45 @@
 .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+    grid-auto-rows: 60px;
     gap: 4px;
     text-align: center;
 }
 
-.cell {
-    height: 40px;
+.cell.empty {
+    background: transparent;
 }
 
-.cell.selected {
-    background: #999;
+.form {
+    display: flex;
+    flex-direction: row;
+    margin: 40px;
+    border: 1px solid var(--text-primary);
+    border-radius: 6px;
+    justify-content: center;
+    align-items: center;
+}
+
+.button {
+    padding: 12px;
+    margin: 16px;
+}
+.selected {
+    background: #333;
     color: white;
 }
 
-.cell.empty {
-    background: transparent;
+.section {
+    display: flex;
+    flex-direction: column;
+    margin: auto 0;
+    padding: 50px;
+    gap: 20px;
+    height: 100%;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    margin: auto 0;
 }

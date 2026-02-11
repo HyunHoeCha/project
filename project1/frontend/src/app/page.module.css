@@ -13,24 +13,9 @@
   color: var(--text-primary);
 }
 
-.section {
-  margin: 40px;
-  border: 1px solid var(--text-primary);
-  border-radius: 6px;
-}
-
 .button {
   padding: 12px;
   margin: 16px;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  margin: auto 0;
-  padding: 50px;
-  gap: 20px;
-  height: 100%;
 }
 
 @media (max-width: 600px) {

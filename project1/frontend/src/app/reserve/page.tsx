@@ -1,55 +1,38 @@
 "use client"
-import styles from "../page.module.css"
-import { useState } from "react"
-import {CalendarHeader} from "@/components/reservation/CalendarHeader";
-import {CalendarGrid} from "@/components/reservation/CalendarGrid";
+import {useState} from "react";
 
-export default function ReservePage() {
-    const today = new Date();
-    const nowYear = today.getFullYear();
-    const nowMonth = today.getMonth() + 1;
+import styles from "./page.module.css"
+import Calendar from "@/components/Calendar/Calendar"
+import Location from "@/components/option/Location"
+import Time from "@/components/Time/Time"
 
-    const [currentYM, setCurrentYM] = useState({year: nowYear, month: nowMonth});
+
+export default function page() {
+    const [location, setLocation] = useState<string | null>(null);
     const [date, setDate] = useState<string | null>(null);
+    const [time, setTime] = useState<string | null>(null);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // string으로 전달.
+        console.log("선택된 값");
+        console.log("location: ", location);
+        console.log("date: ", date);
+        console.log("time: ", time);
+    }
+
 
     return (
-        <section className={styles.section}>
-            <form className={styles.form}>
-                <div style={{textAlign: "center"}}>
-                    <h3>날짜</h3>
-                    <CalendarHeader
-                        year={currentYM.year}
-                        month={currentYM.month}
-                        onPrevMonth={() => {
-                            setCurrentYM((prev) => {
-                                if (prev.month === 1) {
-                                    return {year: prev.year - 1, month: 12};
-                                }
-                                return {year: prev.year, month: prev.month - 1};
-                            });
-                        }}
-                        onNextMonth={() => {
-                            setCurrentYM((prev) => {
-                                if (prev.month === 12) {
-                                    return {year: prev.year + 1, month: 1};
-                                }
-                                return {year: prev.year, month: prev.month + 1};
-                            });
-                        }}
-                    />
-                </div>
-
-                <CalendarGrid
-                    year={currentYM.year}
-                    month={currentYM.month}
-                    date={date}
-                    selectedDate={(dateStr) => setDate(dateStr)}
-                />
-
-                <></>
-
-                <button>등록</button>
-            </form>
-        </section>
+        <form className={styles.form} onSubmit={handleSubmit}>
+            <Location value={location} onChange={setLocation} />
+            <div style={{display: "flex", flexDirection: "column"}}>
+                <Calendar value={date} onChange={setDate} />
+                <Time value={time} onChange={setTime} />
+            </div>
+            <button type={"reset"} className={styles.button}>새로 고침</button>
+            <button type={"submit"} className={styles.button}>다음 단계</button>
+        </form>
     )
 }
+
