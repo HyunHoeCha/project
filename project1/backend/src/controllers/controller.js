@@ -1,83 +1,108 @@
-import reservationData from '../data/reservation.data.js'
-import { findStatus, matchFilter } from "../middleware/findData.js";
-import { nextId, reserveId } from '../utils/idGenerator.js';
-// 비즈니스 로직
+import {
+    getAllReservations,
+    getReservation,
+    createReservation,
+    updateReservation,
+    removeReservation,
+    getReservationByStatus,
+    updateReservationStatus,
+} from "../services/reservation.service.js";
+import fs from "fs";
+// 오로지 req, res만 받고 service를 호출하여 결과를 전달하는 로직
+// sql과 db X
 
-// 목록 조회
-function getReserve (req, res) {
+export async function getList(req, res) {
+    const data = await getAllReservations()
+    if (data.length === 0) {
+        return res.status(200).json({message: "예약 내역이 없습니다.", data: [] });
+    }
+    return res.json({data});
+}
+
+// 필터를 통한 단건 조회
+export async function get(req, res) {
     const filter = {
         search: (req.query.reserve ?? "").toLowerCase() || null,
-        status: req.query.allow ? findStatus(req.query.allow) : null,
+        status: req.query.allow ? req.query.allow : null
     }
 
-    let result = reservationData
-        .filter(r => matchFilter(r, filter));
-
-    res.json({total: result.length, data: result});
-}
-
-function getReserveById (req, res) {
-    return res.json({data: req.data});
-}
-
-function addReserve (req, res) {
-    const now = new Date().toISOString();
-    const initialStatus = "STANDBY";
-
-    const newReserve = {
-        id: nextId(reservationData),
-        ...req.body,
-        reserveId: reserveId(),
-        status: initialStatus,
-        createdAt: now,
-        updatedAt: now,
-    }
-
-    reservationData.push(newReserve);
-    res.status(201).json(newReserve);
-}
-
-function updateReserve (req, res) {
-    const data = req.body;
-    const now = new Date().toISOString();
-
-    for (const key in data) {
-        if (!reservationData[key].status.includes("STANDBY")) {
-            return res.status(404).json({
-                "message": "예약 수정 실패"
-            })
+    let data = null;
+    if (filter.search) {
+        data = await getReservation({id: filter.search, name: filter.search});
+        if (!data) {
+            return res.status(200).json({message: "예약 내역이 없습니다.", data: null });
         }
-        reservationData[key] = data[key];
+        return res.json({data});
     }
 
-    data.updatedAt = now;
-    res.json({data: data});
+    if (filter.status) {
+        data = await getReservationByStatus(filter.status);
+        if (!data) {
+            return res.status(200).json({message: "대기중인 예약이 없습니다.", data: null });
+        }
+        return res.json({data});
+    }
+
+    return res.json({data});
 }
 
-function removeReserve (req, res) {
-    const data = req.body;
-    const before = reservationData.length;
-
-    if (!data.status.includes("STANDBY"))
-        return res.status(409).json({
-            "message": "예약이 대기중이 아닙니다."
+// service쪽에서 throw를 했다면
+// 여기선 따로 throw처리를 하지않고 return값으로 err 전달.
+export async function add (req, res) {
+    try{
+        const data = await createReservation(req.body);
+        // fs.writeFileSync("reservation.data.txt", JSON.stringify(data, null, 2), "utf8");
+        return res.status(201).json({data});
+    } catch (err) {
+        const status = err.status || 500;
+        return res.status(status).json({
+            message: err.message
         });
-
-    const result = reservationData
-        .splice(reservationData.indexOf(data), 1);
-
-    if (result.length === before)
-        res.status(404).json({
-            "message": "예약 삭제 실패"
-        })
-
-    res.json({"message": "예약 삭제 완료"});
+    }
 }
 
-export default {
-    getReserve,
-    getReserveById,
-    addReserve,
-    updateReserve,
-    removeReserve,
+export async function update (req, res) {
+    try {
+        const data = await updateReservation(req.body);
+        return res.status(200).json({data});
+    } catch (err) {
+        const status = err.status || 500;
+        return res.status(status).json({
+            message: err.message
+        })
+    }
+}
+
+export async function updateStatus (req, res) {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    try {
+        const data = await updateReservationStatus(id, status);
+        console.log(id)
+        console.log(status);
+        console.log(data);
+        return res.status(200).json({data});
+    } catch (err) {
+        const status = err.status || 500;
+        return res.status(status).json({
+            message: err.message
+        })
+    }
+}
+
+// status = 204인 경우 본문이 없어야함.
+// 따라서 성공 메세지를 전달할려면 status = 200으로 되어야한다.
+export async function remove (req, res) {
+    const { id } = req.params;
+
+    try {
+        const msg = await removeReservation(id);
+        return res.status(200).json({msg});
+    } catch (err) {
+        const status = err.status || 500;
+        return res.status(status).json({
+            message: err.message
+        })
+    }
 }

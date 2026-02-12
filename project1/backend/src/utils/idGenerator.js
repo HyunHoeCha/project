@@ -1,8 +1,3 @@
-export function nextId(data) {
-    const maxId = data.reduce((max, i) => Math.max(max, i), 0);
-    return maxId + 1;
-}
-
 export function reserveId() {
     const now = new Date();
     const year = now.getFullYear();

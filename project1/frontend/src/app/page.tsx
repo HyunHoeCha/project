@@ -8,7 +8,9 @@ export default function Home(){
           <button className={styles.button}>
               <Link href={"/reserve"}>예약 하기</Link>
           </button>
-          <button className={styles.button}>예약 목록</button>
+          <button className={styles.button}>
+              <Link href={"/reservations"}>예약 목록</Link>
+          </button>
           <button className={styles.button}>예약 상세 조회</button>
           <button className={styles.button}>상태 변경</button>
       </nav>
