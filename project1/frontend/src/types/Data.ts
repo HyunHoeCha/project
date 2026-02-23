@@ -8,3 +8,13 @@ export interface Reservation {
     createdAt: string;
     updatedAt: string;
 }
+
+export type ReservationsResponse = {
+    data: Reservation[];
+}
+
+export interface ParamsProps {
+    params: Promise<{id: string}>;
+}
+
+export type State = "IDLE" | "LOADING" | "SUCCESS" | "ERROR";

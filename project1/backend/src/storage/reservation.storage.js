@@ -29,7 +29,7 @@ export async function find(reserveId, name) {
     return rows[0] || null;
 }
 
-// PK id (추가, 수정, 삭제 전용)
+// PK id (상세조회, 추가, 수정, 삭제 전용)
 export async function findById(id) {
     let sql = "SELECT * FROM reservations WHERE id = ?";
     const findReserve = [id];

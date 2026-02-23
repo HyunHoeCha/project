@@ -20,20 +20,17 @@ export async function getAllReservations() {
     return await findAll();
 }
 
-// id와 이름을 받아서 단건 조회
+// id와 이름을 받아서 필터 조회
 export async function getReservation({id, name}) {
-    const data = await find({
-        reserveId: id,
-        name: name || null,
-    })
+    const data = await find(
+        id,
+        name || null
+    );
 
-    if (!data) {
-        return null;
-    }
-    return data;
+    return data ?? null;
 }
 
-// PK로만 조회(추가, 수정, 삭제 전용)
+// PK로만 조회(상세조회, 추가, 수정, 삭제 전용)
 export async function getReservationById({id}) {
     const data = await findById(id);
 

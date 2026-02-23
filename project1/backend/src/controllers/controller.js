@@ -5,12 +5,13 @@ import {
     updateReservation,
     removeReservation,
     getReservationByStatus,
-    updateReservationStatus,
+    updateReservationStatus, getReservationById,
 } from "../services/reservation.service.js";
 import fs from "fs";
 // 오로지 req, res만 받고 service를 호출하여 결과를 전달하는 로직
 // sql과 db X
 
+// 전체 조회
 export async function getList(req, res) {
     const data = await getAllReservations()
     if (data.length === 0) {
@@ -19,8 +20,20 @@ export async function getList(req, res) {
     return res.json({data});
 }
 
+// 1건의 상세 조회
+export async function getById(req, res) {
+    const data = await getReservationById({
+        id: Number(req.params.id),
+    });
+
+    if (!data) {
+        return res.status(200).json({message: "예약 내역이 없습니다.", data: [] });
+    }
+    return res.json({data});
+}
+
 // 필터를 통한 단건 조회
-export async function get(req, res) {
+export async function getFilter(req, res) {
     const filter = {
         search: (req.query.reserve ?? "").toLowerCase() || null,
         status: req.query.allow ? req.query.allow : null
