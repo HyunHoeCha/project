@@ -1,12 +1,8 @@
 "use client"
 
 import {useState, useEffect} from "react";
-import {Reservation, ParamsProps, State} from "@/types/Data";
+import {ReservationDetailResponse, ParamsProps, State, Reservation} from "@/types/Data";
 import styles from "./page.module.css"
-
-type Response = {
-    data: Reservation;
-}
 
 export default function ReserveDetails({params}: ParamsProps) {
     const [status, setStatus] = useState<State>("IDLE");
@@ -19,9 +15,9 @@ export default function ReserveDetails({params}: ParamsProps) {
             const { id } = await params;
 
             try {
-                const res = await fetch(`/api/reservations/${id}`, {signal: controller.signal});
+                const res = await fetch(`http://localhost:3000/api/reservations/${id}`, {signal: controller.signal});
                 if (!res.ok) throw new Error("Error Fetch");
-                const result:Response = await res.json();
+                const result:ReservationDetailResponse = await res.json();
 
                 setReservations(result.data ?? null);
                 console.log("데이터: ", result);
@@ -45,7 +41,7 @@ export default function ReserveDetails({params}: ParamsProps) {
             </div>
 
             <h3>상세보기</h3>
-              <ul key={reservations?.id} className={styles.item}>
+              <ul className={styles.item}>
                   <li>예약 번호 : {reservations?.reserveId}</li>
                   <li>이름 : {reservations?.name}</li>
                   <li>시작 시간 : {reservations?.startAt}</li>

@@ -1,4 +1,4 @@
-import "./page.module.css"
+import styles from "./layout.module.css"
 
 type Props = {
     children: React.ReactNode,
@@ -9,12 +9,12 @@ export default function Layout({children, modal}: Props) {
     return (
         <>
             {/*본문 레이어*/}
-            <div>
+            <main className={styles.main}>
                 {children}
-            </div>
 
-            {/*모달 레이어*/}
-            {modal}
+                {/*모달 레이어*/}
+                {modal}
+            </main>
         </>
     )
 }

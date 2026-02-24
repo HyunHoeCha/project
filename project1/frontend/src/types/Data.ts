@@ -9,8 +9,12 @@ export interface Reservation {
     updatedAt: string;
 }
 
-export type ReservationsResponse = {
+export type ReservationListResponse = {
     data: Reservation[];
+}
+
+export type ReservationDetailResponse = {
+    data: Reservation;
 }
 
 export interface ParamsProps {

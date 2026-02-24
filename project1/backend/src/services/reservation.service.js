@@ -1,13 +1,12 @@
 // 오로지 매개변수로 id 혹은 name, status만 받아서 빈 데이터인지만 검사 하는 로직
 import {
-    find,
     insert,
     update,
     remove,
     findAll,
-    findStatus,
     findById,
-    updateStatus
+    updateStatus,
+    findByFilter,
 } from "../storage/reservation.storage.js";
 import { reserveId } from "../utils/idGenerator.js";
 import {MySQLDateTime} from "../utils/MySQLDateTime.js";
@@ -20,37 +19,15 @@ export async function getAllReservations() {
     return await findAll();
 }
 
-// id와 이름을 받아서 필터 조회
-export async function getReservation({id, name}) {
-    const data = await find(
-        id,
-        name || null
-    );
-
+export async function getReservationByFilter(filter) {
+    const data = await findByFilter(filter);
     return data ?? null;
 }
 
 // PK로만 조회(상세조회, 추가, 수정, 삭제 전용)
 export async function getReservationById({id}) {
     const data = await findById(id);
-
-    if (!data) {
-        return null;
-    }
-
-    return data;
-}
-
-// 상태로만 조회 (상태 필터 조회 건 전용)
-export async function getReservationByStatus({status}) {
-    const data = await findStatus({
-        status: status || null,
-    })
-
-    if (!data) {
-        return null;
-    }
-    return data;
+    return data ?? null;
 }
 
 // 추가

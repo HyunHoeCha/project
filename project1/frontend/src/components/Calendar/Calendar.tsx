@@ -1,5 +1,5 @@
 "use client"
-import styles from "@/app/reserve/page.module.css"
+import styles from "./Calender.module.css"
 import { useState } from "react"
 import {CalendarHeader} from "./CalendarHeader";
 import {CalendarGrid} from "./CalendarGrid";

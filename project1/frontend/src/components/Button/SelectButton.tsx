@@ -1,5 +1,5 @@
 import {OptionProps} from "@/types/Option";
-import styles from "@/app/reserve/page.module.css";
+import styles from "./Button.module.css";
 
 export function SelectButton({option, selected, onSelect}: OptionProps) {
     return (

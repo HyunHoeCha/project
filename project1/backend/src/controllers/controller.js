@@ -1,22 +1,41 @@
 import {
     getAllReservations,
-    getReservation,
     createReservation,
     updateReservation,
     removeReservation,
-    getReservationByStatus,
-    updateReservationStatus, getReservationById,
+    updateReservationStatus,
+    getReservationById,
+    getReservationByFilter,
 } from "../services/reservation.service.js";
 import fs from "fs";
 // 오로지 req, res만 받고 service를 호출하여 결과를 전달하는 로직
 // sql과 db X
 
-// 전체 조회
-export async function getList(req, res) {
-    const data = await getAllReservations()
+// 필터를 통한 단건 조회 혹은 전체 조회
+export async function getListOrFilter(req, res) {
+
+    const filter = ({
+        reserveId: req.query.reserveId || null,
+        name: req.query.name || null,
+        status: req.query.status || null
+    })
+
+    let data;
+
+    if (filter) {
+        data = await getReservationByFilter(filter);
+        if (!data) {
+            return res.status(200).json({message: "예약 내역이 없습니다.", data: null });
+        }
+        return res.json({data});
+    }
+
+    // 전체 조회 조건.
+    data = await getAllReservations();
     if (data.length === 0) {
         return res.status(200).json({message: "예약 내역이 없습니다.", data: [] });
     }
+
     return res.json({data});
 }
 
@@ -27,35 +46,8 @@ export async function getById(req, res) {
     });
 
     if (!data) {
-        return res.status(200).json({message: "예약 내역이 없습니다.", data: [] });
+        return res.status(404).json({message: "예약 내역이 없습니다.", data: null });
     }
-    return res.json({data});
-}
-
-// 필터를 통한 단건 조회
-export async function getFilter(req, res) {
-    const filter = {
-        search: (req.query.reserve ?? "").toLowerCase() || null,
-        status: req.query.allow ? req.query.allow : null
-    }
-
-    let data = null;
-    if (filter.search) {
-        data = await getReservation({id: filter.search, name: filter.search});
-        if (!data) {
-            return res.status(200).json({message: "예약 내역이 없습니다.", data: null });
-        }
-        return res.json({data});
-    }
-
-    if (filter.status) {
-        data = await getReservationByStatus(filter.status);
-        if (!data) {
-            return res.status(200).json({message: "대기중인 예약이 없습니다.", data: null });
-        }
-        return res.json({data});
-    }
-
     return res.json({data});
 }
 

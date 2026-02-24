@@ -1,5 +1,5 @@
 import {DateProps} from "@/types/DateProps"
-import styles from "@/app/reserve/page.module.css"
+import styles from "./Calender.module.css"
 import {DayCell} from "./DayCell";
 
 // 날짜를 보여주는 그리드 화면

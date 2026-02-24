@@ -1,4 +1,3 @@
-import styles from "@/app/reserve/page.module.css"
 import {SelectButton} from "@/components/Button/SelectButton";
 
 type Props = {

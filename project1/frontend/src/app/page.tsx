@@ -5,15 +5,19 @@ export default function Home(){
   return (
   <main className={styles.main}>
       <nav className={styles.nav}>
-          <button className={styles.button}>
-              <Link href={"/reserve"}>예약 하기</Link>
-          </button>
-          <button className={styles.button}>
-              <Link href={"/reservations"}>예약 목록</Link>
-          </button>
-          <button className={styles.button}>
-              예약 상세 조회
-          </button>
+
+          <Link href={"/reserve"}>
+              <button className={styles.button}>예약 하기</button>
+          </Link>
+
+          <Link href={"/reservations"}>
+              <button className={styles.button}>예약 목록</button>
+          </Link>
+
+          <Link href={"/search"}>
+              <button className={styles.button}>예약 조회</button>
+          </Link>
+
           <button className={styles.button}>상태 변경</button>
       </nav>
   </main>

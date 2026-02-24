@@ -20,6 +20,7 @@ export async function GET(
     );
 
     const reserve = await res.json();
+    console.log(reserve);
 
     return NextResponse.json(reserve, {status: 200});
 }

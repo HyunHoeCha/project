@@ -23,17 +23,3 @@
     padding: 48px 24px;
   }
 }
-
-/*@media (prefers-color-scheme: dark) {*/
-/*  .page {*/
-/*    --background: #000;*/
-/*    --foreground: #000;*/
-
-/*    --text-primary: #ededed;*/
-/*    --text-secondary: #999;*/
-
-/*    --button-primary-hover: #ccc;*/
-/*    --button-secondary-hover: #1a1a1a;*/
-/*    --button-secondary-border: #1a1a1a;*/
-/*  }*/
-/*}*/

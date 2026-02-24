@@ -1,5 +1,6 @@
 import {pool} from "../db/db.js";
 
+// 전체
 export async function findAll() {
     let sql = "SELECT * FROM reservations";
 
@@ -7,26 +8,30 @@ export async function findAll() {
     return rows;
 }
 
-export async function findStatus(status) {
-    let sql = "SELECT * FROM reservations WHERE status = ?";
-    const findReserve = [status];
+export async function findByFilter({
+   reserveId,
+   name,
+   status,
+   }) {
 
-    const [rows] = await pool.query(sql, findReserve);
-    return rows;
-}
-
-// id, 이름, 상태
-export async function find(reserveId, name) {
-    let sql = "SELECT * FROM reservations WHERE id = ?";
-    const findReserve = [reserveId];
-
-    if (name) {
-        sql += " AND name = ?";
-        findReserve.push(name);
+    const query = {
+        sql: "SELECT * FROM reservations WHERE 1=1",
+        params: []
     }
 
-    const [rows] = await pool.query(sql, findReserve);
-    return rows[0] || null;
+    function condition(obj, condition, value) {
+        if (!value) return;
+
+        obj.sql += ` AND ${condition}`;
+        obj.params.push(value);
+    }
+
+    condition(query, "reserveId = ?", reserveId);
+    condition(query, "status = ?", status);
+    condition(query, "name LIKE ?", name && `%${name}%`);
+
+    const [rows] = await pool.query(query.sql, query.params);
+    return rows;
 }
 
 // PK id (상세조회, 추가, 수정, 삭제 전용)

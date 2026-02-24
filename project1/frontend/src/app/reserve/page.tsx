@@ -35,9 +35,11 @@ export default function page() {
 
                 <button type={"submit"} className={styles.button}>다음 단계</button>
             </form>
-            <button type={"button"} className={styles.button}>
-                <Link href={"/"}>돌아가기</Link>
-            </button>
+
+            <Link href={"/"}>
+                <button type={"button"} className={styles.button}>돌아가기</button>
+            </Link>
+
         </>
     )
 }

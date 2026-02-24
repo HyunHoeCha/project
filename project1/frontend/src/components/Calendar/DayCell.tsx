@@ -4,7 +4,7 @@ type DayCellProps = {
     isDisabled: boolean;
     onClick: () => void;
 }
-import styles from "@/app/reserve/page.module.css"
+import styles from "./Calender.module.css"
 
 
 export function DayCell(props: DayCellProps) {
